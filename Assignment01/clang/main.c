@@ -20,24 +20,25 @@
 #include <stdio.h>
 #include "globals.h"
 
-/*
- * Entry point 
- */
 int main(int argc, char* argv[])
 {
     /* Initialize our storehouse.  */
-    minterms_t minTerms = {.vars = 0, .minterms={0} }; /* structure that holds minterms */
+    minterms_t minTerms = {.vars = 0, .numMinterms = 0, .minterms={0} }; /* structure that holds minterms */
 
-    /* 
-     * We have stored minterms of a function in a text file. Open it and build
+    /*---------------------------------------------------------------------------- 
+     * Minterms of a function are given in a text file. Open it and parse it to build
      * the data-structure. It is better to have a separate function to do this
-     * job.
-     */
+     * job. After the following line, you will have minterms stored in
+     * data-structure minterms.
+     *----------------------------------------------------------------------------*/
     processInputFileToStoreMinterms("./minterms.txt", &minTerms);
 
-    /* TESTING */
 
-     /* Let's print out whatever we had processed. */
+    /*-----------------------------------------------------------------------------
+     *  This section do some primitive testing on functions. You need not look
+     *  at them.
+     *-----------------------------------------------------------------------------*/
+    /* Let's print out whatever we had processed. */
     int i;
     for(i = 0; i < minTerms.numMinterms; i++)
         printf("%d,", minTerms.minterms[i]);
@@ -61,6 +62,29 @@ int main(int argc, char* argv[])
         printf("TEST 2 FAILED : Int to binary conversion is wrong. \n");
     else 
         printf("TEST 2 PASSED : Int to binary conversion is successful. \n");
+
+
+    /*-----------------------------------------------------------------------------
+     *  Students must write the implementation of following function in
+     *  methods.c file. You should conform to the signature of the function.
+     *
+     *-----------------------------------------------------------------------------*/
+    minterms_t reducedTerms; /* We need new data-structure to store reduced minterms */
+    reducedTerms.vars = minTerms.vars; /* number of variables are invariant. */
+    quineMcClusky(&minTerms, &reducedTerms);
+
+
+    /*-----------------------------------------------------------------------------
+     *  At this point we should have given minterms in 'minterms' and new
+     *  reduced number of minterms in 'reducedTerms'
+     *
+     *  TODO : TA will write some testing function on these two structures. Make
+     *  sure that your implementation is correct. Passing each test will given you 1
+     *  marks. 
+     *
+     *  I'll upload the test function 2-3 days before the submission date. I am
+     *  too lazy to write them now.
+     *-----------------------------------------------------------------------------*/
 
     return 0;
 

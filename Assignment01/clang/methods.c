@@ -168,3 +168,18 @@ unsigned* intToBinaryVector(unsigned num, unsigned len)
     return result;
 }
 
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  quineMcClusky
+ *  Description:  Quine-McClusky method to minimize a boolean function.
+ * =====================================================================================
+ */
+void quineMcClusky(minterms_t* minterms, minterms_t* reducedTerms)
+{
+    printf("\n*********************************************\n");
+    printf(" Write your implementation here \n");
+    printf("**********************************************\n");
+
+
+}
