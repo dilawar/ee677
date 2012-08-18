@@ -120,3 +120,51 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
 }
 
 
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  binaryVectorToInt
+ *  Description:  Convert a binary vector to int. For instant a vector "0110"
+ *  is converted to 6.
+ *
+ *  Note that vector is an array and lower index of this array is lsb.
+ * =====================================================================================
+ */
+unsigned int binaryVectorToInt(unsigned* vector, unsigned len)
+{
+    if(len == 0)
+        return 0;
+    int i, sum = 0;
+    for(i = 0; i < len; i++)
+        if(1 == *(vector+i))
+            sum += (1<<i);
+        else if(0 != *(vector+i))
+        {
+            fprintf(stderr, "ERROR : Only 0 and 1 are allowed in the argument. \n");
+            fprintf(stderr, "++ Invalid entry at index %d in first argument of function binaryVectorToInt \n", i);
+            fprintf(stderr, "  I am quitting ...\n");
+            exit(-12);
+        }
+    return sum;
+}
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  intToBinaryVector
+ *  Description:  Convert a given unsigned integer to a binary vector of given
+ *  length
+ * =====================================================================================
+ */
+unsigned* intToBinaryVector(unsigned num, unsigned len)
+{
+    unsigned result[len+1];
+    unsigned temp = num;
+    int i;
+    for(i = 0; i < len; i++)
+    {
+        *(result+i) = temp % 2;
+        temp = temp/2;
+    }
+    return result;
+}
+

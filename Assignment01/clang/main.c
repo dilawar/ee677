@@ -35,12 +35,32 @@ int main(int argc, char* argv[])
      */
     processInputFileToStoreMinterms("./minterms.txt", &minTerms);
 
-    /*
-     * Let's print out whatever we had processed.
-     */
+    /* TESTING */
+
+     /* Let's print out whatever we had processed. */
     int i;
     for(i = 0; i < minTerms.numMinterms; i++)
         printf("%d,", minTerms.minterms[i]);
+    printf("\n");
+    /* Test functions we have written */
+    unsigned input[8] = {1,1,1,0,1,1,0}; /* 8 alloted but 7 filled */
+    if( 55 == binaryVectorToInt(input, 6)) /*  and only 6 used */
+        printf("TEST 1 PASSED : Function is ok!\n"); 
+    else 
+        printf("TEST 1 FAILED : Function failed \n");
+
+    unsigned* res = intToBinaryVector(55, 4); /* get 6 bit long representation. */
+    int correct = 1;
+    for(i = 0; i < 4; i++)
+    {
+        if(input[i] != res[i])
+            correct = 0;
+    }
+    printf("\n");
+    if(0 == correct)
+        printf("TEST 2 FAILED : Int to binary conversion is wrong. \n");
+    else 
+        printf("TEST 2 PASSED : Int to binary conversion is successful. \n");
 
     return 0;
 
