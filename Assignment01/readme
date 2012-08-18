@@ -1,1 +1,21 @@
 Partial implementation of Quine-McCluskey method. 
+
+clang :
+
+    This folder contains implementation in c-language.
+
+    To run,  
+      $ make
+    
+    If will generate qn.bin file which you can run from terminal.
+      $ ./qn.bin 
+
+    Header file globals.h contains definition of data-structure. Please do not
+    change definition of this data-structure without notifying the TA. He has to
+    write test-scripts.
+
+    Doubts and queries must be posted on Q/A forum on moodle. 
+
+    You can write your implementation from scratch. In that case, TAs may ask
+    you to appear for a viva and demo. It is hard to read other people code.
+
