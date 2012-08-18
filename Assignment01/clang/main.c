@@ -28,11 +28,19 @@ int main(int argc, char* argv[])
     /* Initialize our storehouse.  */
     minterms_t minTerms = {.vars = 0, .minterms={0} }; /* structure that holds minterms */
 
-    /* We have stored minterms of a function in a text file. Open it and build
+    /* 
+     * We have stored minterms of a function in a text file. Open it and build
      * the data-structure. It is better to have a separate function to do this
      * job.
      */
     processInputFileToStoreMinterms("./minterms.txt", &minTerms);
+
+    /*
+     * Let's print out whatever we had processed.
+     */
+    int i;
+    for(i = 0; i < minTerms.numMinterms; i++)
+        printf("%d,", minTerms.minterms[i]);
 
     return 0;
 

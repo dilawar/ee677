@@ -10,8 +10,8 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Dilawar Singh (), dilawar@ee.iitb.ac.in
- *   Organization:  
+ *         Author:  Dilawar Singh, dilawar@ee.iitb.ac.in
+ *   Organization:  EE, IIT Bombay
  *
  * =====================================================================================
  */
@@ -24,6 +24,7 @@
 
 /* 
  * ===  FUNCTION  ======================================================================
+ *
  *         Name:  processInputFileToStoreMinterms
  *  Description:  See the header file globals.h for details.
  * =====================================================================================
@@ -81,12 +82,13 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
                         pMinterms->numMinterms += 1;
                     }
                 }
-
             }
         }
     }
     
-    /*  sanity test */
+    fclose(fp);
+
+    /*  Sanity test */
     if(pMinterms->numMinterms == 0)
     {
         fprintf(stderr, "ERROR : It is embarassing but I can not parse minterms.\n");
@@ -95,7 +97,8 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
 
     if(pMinterms -> vars == 0)
     {
-        fprintf(stderr, "ERROR : I can not figure out how many variables are in your function. Guessing it from minterms.\n");
+        fprintf(stderr, "Warning : I can not figure out how many variables are in your function.\n");
+        fprintf(stderr, " ++ Guessing it from minterms.\n");
         unsigned maxTerm = 0;
         int i;
         for(i = 0; i < pMinterms->numMinterms; i++)
@@ -106,6 +109,7 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
     /*
      * Test case : Make sure that number of minterms do not exceed 2^vars. 
      */
+    printf("\nDoes your text-file contain following minterms?\n");
     if(pMinterms->numMinterms > (1<<pMinterms->vars))
     {
         fprintf(stderr, "ERROR : Number of minterms are larger than expected for %d variables "
