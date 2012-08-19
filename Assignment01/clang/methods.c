@@ -199,7 +199,7 @@ void intToBinaryVector(unsigned num, unsigned len, unsigned* result)
  */
 void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
 {
-    printf("Converting %d to minterms (%d) \n", num, n);
+    printf(" |- Converting %d to minterms (%d bit long) \n", num, n);
     int i;
     pTerm->size = n;
     for(i = 0; i < n; i++)
