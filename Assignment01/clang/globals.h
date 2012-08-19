@@ -19,7 +19,7 @@
 #ifndef  globals_INC
 #define  globals_INC
 
-typedef enum boolean { TRUE, FALSE, DNTCR} boolean_t;
+typedef enum boolean { FALSE, TRUE,  DNTCR} boolean_t;
 
 /*-----------------------------------------------------------------------------
  *  Structure of a single boolean term.

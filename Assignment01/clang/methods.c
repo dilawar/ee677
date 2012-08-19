@@ -48,52 +48,68 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
     pMinterms->vars = 0;
     while((sizeLine = getline(&line, &len, fp)) != -1)
     {
-        if(len > 1) 
+        char newLine[strlen(line)];
+        int i=0, j = 0;
+        /*  remove all whitespaces */
+        while(line[i]!='\0')
         {
-            char* saveptr, *token;
-            char* str1;
-            int j;
-            const char* delim = " =\n";
-            for(j = 1, str1 = line; ; j++, str1 = NULL)
+            if(line[i] != ' ')
             {
-                token = strtok_r(str1, delim, &saveptr);
-                if(NULL == token)
-                    break;
-                if(j==1 && strcmp(token,"vars") == 0)
-                    varsFound = 1;                
-                if(varsFound == 1 && j == 2)
-                    pMinterms->vars = ((int)*token)-44; /* char to int */
-         
-                if(j==1 && strcmp(token, "minterms") == 0)
-                    mintermsFound = 1;
-                if(mintermsFound == 1 && j == 2)
+                newLine[j] = line[i];
+                j++;
+            }
+            i++;
+        }
+        newLine[j-1] = '\0';
+        
+        if(strstr(newLine, "vars"))
+        {
+            char* find = index(newLine, '=');
+            varsFound = 1;
+            i = 0;
+            int digits[10] = {0};
+            int count = 0;
+            while(find[i+1] != '\0')
+            {
+                int num = (int)find[i+1] - 48;
+                digits[i] = num;
+                count++;
+                i++;
+            }
+            int m = 0;
+            for(i = 0; i < count; i++)
+                m += (digits[count-i-1] * pow(10, i));
+            pMinterms->vars = m;
+        }
+        if(strstr(newLine, "minterms"))
+        {
+            mintermsFound = 1;
+            term_t thisTerm = {.size = 0, .term = {0} };
+            char* find = index(newLine, '=');
+            char* sep;
+            while(sep = rindex(find+1, ','))
+            {
+                int i = 0, count = 0;
+                int digits[10] = {0};
+                while(sep[i+1] != '\0')
                 {
-                    if( 0 == pMinterms->vars)
-                    {
-                        fprintf(stderr, "NOTICE : \n Make sure that file ./minterms.txt has terms = <integer> before the line minterms = .... \n\n");
-                        exit(-10);
-                    }
-                    /* seprate each minterms given in csv */
-                    const char* subdelim = ",";
-                    char* subToken, saveptr2;
-                    char* str2;
-                    int k;
-                    for(k = 1, str2 = token; ; k++, str2 = NULL)
-                    {
-                        subToken = strtok_r(str2, subdelim, &saveptr2);
-                        if(NULL == subToken)
-                            break;
-                        unsigned int m = (unsigned int)(*subToken) - 44;
-                        term_t thisTerm = {.size = 0, .term = {0}};
-                        intToMinterm(&thisTerm, m, pMinterms->vars);
-                        pMinterms->terms[k] = thisTerm;
-                        pMinterms->nSOP += 1;
-                    }
+                    int num = (int)sep[i+1] - 48;
+                    digits[i] = num;
+                    count++;
+                    i++;
                 }
+                int m = 0;
+                for(i = 0; i < count; i++)
+                    m += (digits[count-i-1] * pow(10, i));
+                
+                intToMinterm(&thisTerm, m, pMinterms->vars );
+                pMinterms->terms[pMinterms->nSOP] = thisTerm;
+                pMinterms->nSOP++;
+                *sep = '\0';
             }
         }
     }
-    
+
     fclose(fp);
 
     /*  Sanity test */
@@ -183,6 +199,7 @@ void intToBinaryVector(unsigned num, unsigned len, unsigned* result)
  */
 void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
 {
+    printf("Converting %d to minterms (%d) \n", num, n);
     int i;
     pTerm->size = n;
     for(i = 0; i < n; i++)
