@@ -10,8 +10,8 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Dilawar Singh (), dilawar@ee.iitb.ac.in
- *   Organization:  
+ *         Author:  Dilawar Singh , dilawar@ee.iitb.ac.in
+ *   Organization:  EE, IIT Bombay
  *
  * =====================================================================================
  */
@@ -19,14 +19,37 @@
 #ifndef  globals_INC
 #define  globals_INC
 
+typedef enum boolean { TRUE, FALSE, DNTCR} boolean_t;
+
 /*-----------------------------------------------------------------------------
- *  Struture to hold minterms. Variable 'vars' is number of variables 
- *  and array of unsigned int are minterms. For example, if a function 
+ *  Structure of a single boolean term.
+ *
+ *  For instance if a term is xy'z then its size is 3 and term = [TRUE, FALSE,
+ *  TRUE]; Note that variable name is not important. You can see this term as
+ *  '101'.
+ *
+ *  For term wx-z' or '11-0' size is 4 and term = [TRUE, TRUE, DNTCR, FALSE] 
+ *
+ *-----------------------------------------------------------------------------*/
+#define MAX_SIZE 1024
+typedef struct 
+{
+    unsigned size; /* size of the minterm */
+    boolean_t term[MAX_SIZE];
+} term_t;
+
+/*-----------------------------------------------------------------------------
+ *  Struture to hold sum of product. Variable 'vars' is number of variables in
+ *  function.
+ *  
+ *  If a function is 
  *     f(w,x,y,z) = SOP(0,1,5,7,8,9,10,13,15), then 
  *  vars = 4 and 
- *  minterms[8] = {0,1,5,7,8,9,10,13,15}
+ *  minterms[8] = {term_t for 0, term_t for 1,  ..., term_t for 15}
+ *  
+ *  term_t for 1 : size = 4, term[4] = {FALSE, FALSE, TRUE}.
  *
- *  Structure is made into a typedef.
+ *  Note that if there is no don't care (DNTCR) then term is a minterm.
  *-----------------------------------------------------------------------------*/ 
 #define MAX_TERMS 10*1024
 #define MAX_VARS  1024
@@ -34,10 +57,8 @@ typedef struct
 {
     unsigned int vars;
     unsigned int numMinterms;
-    unsigned int minterms[MAX_TERMS]; 
-    unsigned indices[MAX_VARS];
-} minterms_t;
-
+    term_t terms[MAX_TERMS]; 
+} sop_t;
 
 /* 
  * ===  FUNCTION  ======================================================================
@@ -47,6 +68,6 @@ typedef struct
  *
  * =====================================================================================
  */
-void processInputFileToStoreMinterms(const char* filename, minterms_t* minterms);
+void processInputFileToStoreMinterms(const char* filename, sop_t* pSops);
 
 #endif   /* ----- #ifndef globals_INC  ----- */

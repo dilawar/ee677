@@ -29,7 +29,7 @@
  *  Description:  See the header file globals.h for details.
  * =====================================================================================
  */
-void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms)
+void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
 {
     fprintf(stdout, "Reading file containing minterms \n");
 
@@ -45,6 +45,7 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
     int sizeLine = 0;
     int varsFound = 0;
     int mintermsFound = 0;
+    pMinterms->vars = 0;
     while((sizeLine = getline(&line, &len, fp)) != -1)
     {
         if(len > 1) 
@@ -61,12 +62,17 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
                 if(j==1 && strcmp(token,"vars") == 0)
                     varsFound = 1;                
                 if(varsFound == 1 && j == 2)
-                    pMinterms->vars = ((int)*token)-44;
-
+                    pMinterms->vars = ((int)*token)-44; /* char to int */
+         
                 if(j==1 && strcmp(token, "minterms") == 0)
                     mintermsFound = 1;
                 if(mintermsFound == 1 && j == 2)
                 {
+                    if( 0 == pMinterms->vars)
+                    {
+                        fprintf(stderr, "NOTICE : \n Make sure that file ./minterms.txt has terms = <integer> before the line minterms = .... \n\n");
+                        exit(-10);
+                    }
                     /* seprate each minterms given in csv */
                     const char* subdelim = ",";
                     char* subToken, saveptr2;
@@ -77,8 +83,10 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
                         subToken = strtok_r(str2, subdelim, &saveptr2);
                         if(NULL == subToken)
                             break;
-                        unsigned int mterm = (unsigned int)(*subToken) - 44;
-                        pMinterms->minterms[k] = mterm;
+                        unsigned int m = (unsigned int)(*subToken) - 44;
+                        term_t thisTerm = {.size = 0, .term = {0}};
+                        intToMinterm(&thisTerm, m, pMinterms->vars);
+                        pMinterms->terms[k] = thisTerm;
                         pMinterms->numMinterms += 1;
                     }
                 }
@@ -95,21 +103,21 @@ void processInputFileToStoreMinterms(const char* fileName, minterms_t* pMinterms
         exit(-9);
     }
 
-    if(pMinterms -> vars == 0)
-    {
-        fprintf(stderr, "Warning : I can not figure out how many variables are in your function.\n");
-        fprintf(stderr, " ++ Guessing it from minterms.\n");
-        unsigned maxTerm = 0;
-        int i;
-        for(i = 0; i < pMinterms->numMinterms; i++)
-            if(pMinterms->minterms[i] > maxTerm)
-                maxTerm = pMinterms->minterms[i];
-        pMinterms->vars = (int)ceil(sqrt((double)maxTerm));
-    }
     /*
      * Test case : Make sure that number of minterms do not exceed 2^vars. 
      */
     printf("\nDoes your text-file contain following minterms?\n");
+    int i, ii;
+    for(i = 0; i < pMinterms->numMinterms; i++)
+    {
+        for(ii = 0; ii < pMinterms->vars; ii++)
+            printf("%d", pMinterms->terms[i].term[ii]);
+        printf(", ");
+    }
+    printf("\n");
+
+
+
     if(pMinterms->numMinterms > (1<<pMinterms->vars))
     {
         fprintf(stderr, "ERROR : Number of minterms are larger than expected for %d variables "
@@ -171,11 +179,35 @@ unsigned* intToBinaryVector(unsigned num, unsigned len)
 
 /* 
  * ===  FUNCTION  ======================================================================
+ *         Name:  intToMinterm
+ *  Description:  Gievn an unsigned int, convert it to minterm.
+ * =====================================================================================
+ */
+void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
+{
+    int i;
+    pTerm->size = n;
+    for(i = 0; i < n; i++)
+    {
+        if( (n & (1<<i)) == 0)
+            pTerm->term[i] = FALSE;
+        else if( (n&(1<<i)) > 0)
+            pTerm->term[i] = TRUE;
+        else 
+        {
+            fprintf(stderr, "FATAL : Invalid !! \n");
+            exit(-1);
+        }
+    }   
+}
+
+/* 
+ * ===  FUNCTION  ======================================================================
  *         Name:  quineMcClusky
  *  Description:  Quine-McClusky method to minimize a boolean function.
  * =====================================================================================
  */
-void quineMcClusky(minterms_t* minterms, minterms_t* reducedTerms)
+void quineMcClusky(sop_t* minterms, sop_t* reducedTerms)
 {
     printf("\n*********************************************\n");
     printf(" Write your implementation here \n");

@@ -23,7 +23,11 @@
 int main(int argc, char* argv[])
 {
     /* Initialize our storehouse.  */
-    minterms_t minTerms = {.vars = 0, .numMinterms = 0, .minterms={0} }; /* structure that holds minterms */
+    
+    /* Structure that holds minterms 
+     * Note : This type of initialization is allowed in C.
+     */
+    sop_t minTerms = {.vars = 0, .numMinterms = 0, .terms={0} }; 
 
     /*---------------------------------------------------------------------------- 
      * Minterms of a function are given in a text file. Open it and parse it to build
@@ -32,6 +36,8 @@ int main(int argc, char* argv[])
      * data-structure minterms.
      *----------------------------------------------------------------------------*/
     processInputFileToStoreMinterms("./minterms.txt", &minTerms);
+
+#if  0     /* ----- #if 0 : If0Label_1 ----- */
 
 
     /*-----------------------------------------------------------------------------
@@ -85,6 +91,8 @@ int main(int argc, char* argv[])
      *  I'll upload the test function 2-3 days before the submission date. I am
      *  too lazy to write them now.
      *-----------------------------------------------------------------------------*/
+
+#endif     /* ----- #if 0 : If0Label_1 ----- */
 
     return 0;
 
