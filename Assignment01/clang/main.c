@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     /* Structure that holds minterms 
      * Note : This type of initialization is allowed in C.
      */
-    sop_t minTerms = {.vars = 0, .numMinterms = 0, .terms={0} }; 
+    sop_t minTerms = {.vars = 0, .nSOP = 0, .terms={0} }; 
 
     /*---------------------------------------------------------------------------- 
      * Minterms of a function are given in a text file. Open it and parse it to build
@@ -37,27 +37,23 @@ int main(int argc, char* argv[])
      *----------------------------------------------------------------------------*/
     processInputFileToStoreMinterms("./minterms.txt", &minTerms);
 
-#if  0     /* ----- #if 0 : If0Label_1 ----- */
 
 
     /*-----------------------------------------------------------------------------
      *  This section do some primitive testing on functions. You need not look
      *  at them.
      *-----------------------------------------------------------------------------*/
-    /* Let's print out whatever we had processed. */
-    int i;
-    for(i = 0; i < minTerms.numMinterms; i++)
-        printf("%d,", minTerms.minterms[i]);
-    printf("\n");
-    /* Test functions we have written */
+    
+    /* Testing some helper functions we have written */
     unsigned input[8] = {1,1,1,0,1,1,0}; /* 8 alloted but 7 filled */
     if( 55 == binaryVectorToInt(input, 6)) /*  and only 6 used */
         printf("TEST 1 PASSED : Function is ok!\n"); 
     else 
         printf("TEST 1 FAILED : Function failed \n");
 
-    unsigned* res = intToBinaryVector(55, 4); /* get 6 bit long representation. */
-    int correct = 1;
+    unsigned res[8];
+    intToBinaryVector(55, 4, res); /* get 6 bit long representation. */
+    int i, correct = 1;
     for(i = 0; i < 4; i++)
     {
         if(input[i] != res[i])
@@ -77,7 +73,7 @@ int main(int argc, char* argv[])
      *-----------------------------------------------------------------------------*/
     
     /* We need new data-structure to store reduced minterms */
-    minterms_t reducedTerms = {.vars = 0, .numMinterms = 0, .minterms = {0}, .indices={0} }; 
+    sop_t reducedTerms = {.vars = 0, .nSOP = 0, .terms = {0} }; 
     quineMcClusky(&minTerms, &reducedTerms);
 
     /*-----------------------------------------------------------------------------
@@ -92,7 +88,6 @@ int main(int argc, char* argv[])
      *  too lazy to write them now.
      *-----------------------------------------------------------------------------*/
 
-#endif     /* ----- #if 0 : If0Label_1 ----- */
 
     return 0;
 

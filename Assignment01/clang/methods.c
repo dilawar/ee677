@@ -87,7 +87,7 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
                         term_t thisTerm = {.size = 0, .term = {0}};
                         intToMinterm(&thisTerm, m, pMinterms->vars);
                         pMinterms->terms[k] = thisTerm;
-                        pMinterms->numMinterms += 1;
+                        pMinterms->nSOP += 1;
                     }
                 }
             }
@@ -97,7 +97,7 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
     fclose(fp);
 
     /*  Sanity test */
-    if(pMinterms->numMinterms == 0)
+    if(pMinterms->nSOP == 0)
     {
         fprintf(stderr, "ERROR : It is embarassing but I can not parse minterms.\n");
         exit(-9);
@@ -108,17 +108,17 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
      */
     printf("\nDoes your text-file contain following minterms?\n");
     int i, ii;
-    for(i = 0; i < pMinterms->numMinterms; i++)
+    for(i = 0; i < pMinterms->nSOP; i++)
     {
         for(ii = 0; ii < pMinterms->vars; ii++)
-            printf("%d", pMinterms->terms[i].term[ii]);
+            printf("%d", pMinterms->terms[i].term[(pMinterms->vars)-ii-1]);
         printf(", ");
     }
     printf("\n");
 
 
 
-    if(pMinterms->numMinterms > (1<<pMinterms->vars))
+    if(pMinterms->nSOP > (1<<pMinterms->vars))
     {
         fprintf(stderr, "ERROR : Number of minterms are larger than expected for %d variables "
                 , pMinterms->vars);
@@ -163,9 +163,8 @@ unsigned int binaryVectorToInt(unsigned* vector, unsigned len)
  *  length
  * =====================================================================================
  */
-unsigned* intToBinaryVector(unsigned num, unsigned len)
+void intToBinaryVector(unsigned num, unsigned len, unsigned* result)
 {
-    unsigned result[len+1];
     unsigned temp = num;
     int i;
     for(i = 0; i < len; i++)
@@ -173,7 +172,6 @@ unsigned* intToBinaryVector(unsigned num, unsigned len)
         *(result+i) = temp % 2;
         temp = temp/2;
     }
-    return result;
 }
 
 
@@ -189,9 +187,9 @@ void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
     pTerm->size = n;
     for(i = 0; i < n; i++)
     {
-        if( (n & (1<<i)) == 0)
+        if( (num&(1<<i)) == 0)
             pTerm->term[i] = FALSE;
-        else if( (n&(1<<i)) > 0)
+        else if( (num&(1<<i)) > 0)
             pTerm->term[i] = TRUE;
         else 
         {

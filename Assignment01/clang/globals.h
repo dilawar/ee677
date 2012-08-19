@@ -56,7 +56,7 @@ typedef struct
 typedef struct 
 {
     unsigned int vars;
-    unsigned int numMinterms;
+    unsigned int nSOP;
     term_t terms[MAX_TERMS]; 
 } sop_t;
 
