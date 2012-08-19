@@ -69,10 +69,10 @@ int main(int argc, char* argv[])
      *  methods.c file. You should conform to the signature of the function.
      *
      *-----------------------------------------------------------------------------*/
-    minterms_t reducedTerms; /* We need new data-structure to store reduced minterms */
-    reducedTerms.vars = minTerms.vars; /* number of variables are invariant. */
+    
+    /* We need new data-structure to store reduced minterms */
+    minterms_t reducedTerms = {.vars = 0, .numMinterms = 0, .minterms = {0}, .indices={0} }; 
     quineMcClusky(&minTerms, &reducedTerms);
-
 
     /*-----------------------------------------------------------------------------
      *  At this point we should have given minterms in 'minterms' and new

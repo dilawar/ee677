@@ -29,12 +29,13 @@
  *  Structure is made into a typedef.
  *-----------------------------------------------------------------------------*/ 
 #define MAX_TERMS 10*1024
+#define MAX_VARS  1024
 typedef struct 
 {
     unsigned int vars;
     unsigned int numMinterms;
     unsigned int minterms[MAX_TERMS]; 
-
+    unsigned indices[MAX_VARS];
 } minterms_t;
 
 
