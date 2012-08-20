@@ -3,7 +3,8 @@
  *
  *       Filename:  methods.c
  *
- *    Description:  Implementation of Quine-McClusky method.
+ *    Description:  Implementation of Quine-McClusky method and helper
+ *    functions.
  *
  *        Version:  1.0
  *        Created:  08/18/2012 04:07:53 AM
@@ -210,7 +211,7 @@ void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
             pTerm->term[i] = TRUE;
         else 
         {
-            fprintf(stderr, "FATAL : Invalid !! \n");
+            fprintf(stderr, "FATAL : Invalid number being converted !! \n");
             exit(-1);
         }
     }   
@@ -220,13 +221,15 @@ void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
  * ===  FUNCTION  ======================================================================
  *         Name:  quineMcClusky
  *  Description:  Quine-McClusky method to minimize a boolean function.
+ *
+ *  Students should write this function.
  * =====================================================================================
  */
+
 void quineMcClusky(sop_t* minterms, sop_t* reducedTerms)
 {
     printf("\n*********************************************\n");
     printf(" Write your implementation here \n");
     printf("**********************************************\n");
-
 
 }
