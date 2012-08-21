@@ -1,4 +1,4 @@
-CC = gcc 
+CC = gcc
 CFLAGS = -c -g
 OBJ = main.o methods.o
 LDFLAGS = -lm

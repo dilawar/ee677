@@ -55,8 +55,8 @@ typedef struct
 #define MAX_VARS  1024
 typedef struct 
 {
-    unsigned int vars;
-    unsigned int nSOP;
+    unsigned vars;
+    unsigned nSOP;
     term_t terms[MAX_TERMS]; 
 } sop_t;
 
@@ -69,5 +69,43 @@ typedef struct
  * =====================================================================================
  */
 void processInputFileToStoreMinterms(const char* filename, sop_t* pSops);
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  intToMinterm
+ *  Description:  Convert an integer to a minterm
+ * =====================================================================================
+ */
+void intToMinterm(term_t* pTerm, unsigned num, unsigned n);
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  quineMcClusky
+ *  Description:  Compute minimal form of a binary function
+ * =====================================================================================
+ */
+void quineMcClusky(sop_t* minterms, sop_t* minimal);
+
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  binaryVectorToInt
+ *  Description:  Convert a binary vector to its equivalent unsigned int
+ *  value.
+ * =====================================================================================
+ */
+unsigned binaryVectorToInt(unsigned* vec, unsigned len);
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  intToBinaryVector
+ *  Description:  Convert an unsigned integer to ints binary vector form.
+ * =====================================================================================
+ */
+void intToBinaryVector(unsigned val, unsigned len, unsigned* vec);
 
 #endif   /* ----- #ifndef globals_INC  ----- */

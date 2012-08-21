@@ -98,11 +98,11 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
                     count++;
                     i++;
                 }
-                int m = 0;
+                unsigned m = 0;
                 for(i = 0; i < count; i++)
                     m += (digits[count-i-1] * pow(10, i));
                 
-                intToMinterm(&thisTerm, m, pMinterms->vars );
+                intToMinterm(&thisTerm, m, (unsigned)pMinterms->vars);
                 pMinterms->terms[pMinterms->nSOP] = thisTerm;
                 pMinterms->nSOP++;
                 *sep = '\0';
@@ -197,7 +197,7 @@ void intToBinaryVector(unsigned num, unsigned len, unsigned* result)
  *  Description:  Gievn an unsigned int, convert it to minterm.
  * =====================================================================================
  */
-void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
+void intToMinterm(term_t* pTerm, unsigned num, unsigned n)
 {
     printf(" |- Converting %d to minterms (%d bit long) \n", num, n);
     int i;
