@@ -3,8 +3,7 @@
  *
  *       Filename:  methods.c
  *
- *    Description:  Implementation of Quine-McClusky method and helper
- *    functions.
+ *    Description:  Implementation of Quine-McClusky method.
  *
  *        Version:  1.0
  *        Created:  08/18/2012 04:07:53 AM
@@ -99,11 +98,11 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
                     count++;
                     i++;
                 }
-                int m = 0;
+                unsigned m = 0;
                 for(i = 0; i < count; i++)
                     m += (digits[count-i-1] * pow(10, i));
                 
-                intToMinterm(&thisTerm, m, pMinterms->vars );
+                intToMinterm(&thisTerm, m, (unsigned)pMinterms->vars);
                 pMinterms->terms[pMinterms->nSOP] = thisTerm;
                 pMinterms->nSOP++;
                 *sep = '\0';
@@ -198,7 +197,7 @@ void intToBinaryVector(unsigned num, unsigned len, unsigned* result)
  *  Description:  Gievn an unsigned int, convert it to minterm.
  * =====================================================================================
  */
-void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
+void intToMinterm(term_t* pTerm, unsigned num, unsigned n)
 {
     printf(" |- Converting %d to minterms (%d bit long) \n", num, n);
     int i;
@@ -211,7 +210,7 @@ void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
             pTerm->term[i] = TRUE;
         else 
         {
-            fprintf(stderr, "FATAL : Invalid number being converted !! \n");
+            fprintf(stderr, "FATAL : Invalid !! \n");
             exit(-1);
         }
     }   
@@ -221,15 +220,13 @@ void intToMinterm(term_t* pTerm, unsigned int num, unsigned n)
  * ===  FUNCTION  ======================================================================
  *         Name:  quineMcClusky
  *  Description:  Quine-McClusky method to minimize a boolean function.
- *
- *  Students should write this function.
  * =====================================================================================
  */
-
 void quineMcClusky(sop_t* minterms, sop_t* reducedTerms)
 {
     printf("\n*********************************************\n");
     printf(" Write your implementation here \n");
     printf("**********************************************\n");
+
 
 }

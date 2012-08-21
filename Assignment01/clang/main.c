@@ -25,9 +25,13 @@ int main(int argc, char* argv[])
     /* Initialize our storehouse.  */
     
     /* Structure that holds minterms 
-     * Note : This type of initialization is allowed in C.
      */
-    sop_t minTerms = {.vars = 0, .nSOP = 0, .terms={0} }; 
+    sop_t* pMinTerms = (sop_t*) calloc(1, sizeof(sop_t)) ;
+    if(NULL == pMinTerms)
+    {
+        fprintf(stderr, "Out of memory! Existing ...\n");
+        exit(0);
+    }
 
     /*---------------------------------------------------------------------------- 
      * Minterms of a function are given in a text file. Open it and parse it to build
@@ -35,7 +39,7 @@ int main(int argc, char* argv[])
      * job. After the following line, you will have minterms stored in
      * data-structure minterms.
      *----------------------------------------------------------------------------*/
-    processInputFileToStoreMinterms("./minterms.txt", &minTerms);
+    processInputFileToStoreMinterms("./minterms.txt", pMinTerms);
 
 
 
@@ -73,8 +77,8 @@ int main(int argc, char* argv[])
      *-----------------------------------------------------------------------------*/
     
     /* We need new data-structure to store reduced minterms */
-    sop_t reducedTerms = {.vars = 0, .nSOP = 0, .terms = {0} }; 
-    quineMcClusky(&minTerms, &reducedTerms);
+    sop_t* pReducedTerms = (sop_t*) calloc(1, sizeof(sop_t)); 
+    quineMcClusky(pMinTerms, pReducedTerms);
 
     /*-----------------------------------------------------------------------------
      *  At this point we should have given minterms in 'minterms' and new
@@ -89,6 +93,9 @@ int main(int argc, char* argv[])
      *-----------------------------------------------------------------------------*/
 
 
+    /* free memory, you may like to run it again */
+    free(pMinTerms);
+    free(pReducedTerms);
     return 0;
 
 }

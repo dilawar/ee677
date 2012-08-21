@@ -3,7 +3,7 @@
  *
  *       Filename:  globals.h
  *
- *    Description:  header file containing all definitions.
+ *    Description:  header file for definitions.
  *
  *        Version:  1.0
  *        Created:  08/18/2012 04:07:26 AM
@@ -19,18 +19,7 @@
 #ifndef  globals_INC
 #define  globals_INC
 
-
-/*-----------------------------------------------------------------------------
- *  Following enum type encodes booleans used in our program.
- *
- *  Values of enum are most likely to be :
- *
- *  FALSE  = 0
- *  TRUE   = 1
- *  DNTCR  = 2
- *
- *-----------------------------------------------------------------------------*/
-typedef enum boolean { FALSE, TRUE, DNTCR} boolean_t;
+typedef enum boolean { FALSE, TRUE,  DNTCR} boolean_t;
 
 /*-----------------------------------------------------------------------------
  *  Structure of a single boolean term.
@@ -39,7 +28,7 @@ typedef enum boolean { FALSE, TRUE, DNTCR} boolean_t;
  *  TRUE]; Note that variable name is not important. You can see this term as
  *  '101'.
  *
- *  For term wx-z' or '1120' size is 4 and term = [TRUE, TRUE, DNTCR, FALSE] 
+ *  For term wx-z' or '11-0' size is 4 and term = [TRUE, TRUE, DNTCR, FALSE] 
  *
  *-----------------------------------------------------------------------------*/
 #define MAX_SIZE 1024
@@ -55,20 +44,19 @@ typedef struct
  *  
  *  If a function is 
  *     f(w,x,y,z) = SOP(0,1,5,7,8,9,10,13,15), then 
- *  vars = 4,
- *  nSOP = 9, and 
- *  minterms[9] = {term_t for 0, term_t for 1,  ..., term_t for 15}
+ *  vars = 4 and 
+ *  minterms[8] = {term_t for 0, term_t for 1,  ..., term_t for 15}
  *  
- *  term_t for 1 : size = 4, term[4] = {FALSE, FALSE, FALSE, TRUE}.
+ *  term_t for 1 : size = 4, term[4] = {FALSE, FALSE, TRUE}.
  *
- *  Note that if there is no don't-care (DNTCR) then term is a minterm.
+ *  Note that if there is no don't care (DNTCR) then term is a minterm.
  *-----------------------------------------------------------------------------*/ 
 #define MAX_TERMS 10*1024
 #define MAX_VARS  1024
 typedef struct 
 {
-    unsigned int vars;
-    unsigned int nSOP;
+    unsigned vars;
+    unsigned nSOP;
     term_t terms[MAX_TERMS]; 
 } sop_t;
 
@@ -76,11 +64,48 @@ typedef struct
  * ===  FUNCTION  ======================================================================
  *         Name:  processInputFileToStoreMinterms
  *  Description:  This function open the file 'filename', parse it, and build
- *  the data-struture 'sop_t' meant to store the minterms.
+ *  the data-struture 'minterms' meant to store the minterms.
  *
  * =====================================================================================
  */
 void processInputFileToStoreMinterms(const char* filename, sop_t* pSops);
 
-/* ADD DEFINITIONS HERE */
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  intToMinterm
+ *  Description:  Convert an integer to a minterm
+ * =====================================================================================
+ */
+void intToMinterm(term_t* pTerm, unsigned num, unsigned n);
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  quineMcClusky
+ *  Description:  Compute minimal form of a binary function
+ * =====================================================================================
+ */
+void quineMcClusky(sop_t* minterms, sop_t* minimal);
+
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  binaryVectorToInt
+ *  Description:  Convert a binary vector to its equivalent unsigned int
+ *  value.
+ * =====================================================================================
+ */
+unsigned binaryVectorToInt(unsigned* vec, unsigned len);
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  intToBinaryVector
+ *  Description:  Convert an unsigned integer to ints binary vector form.
+ * =====================================================================================
+ */
+void intToBinaryVector(unsigned val, unsigned len, unsigned* vec);
+
 #endif   /* ----- #ifndef globals_INC  ----- */
