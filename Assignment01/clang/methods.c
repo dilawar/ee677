@@ -81,6 +81,13 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
                 m += (digits[count-i-1] * pow(10, i));
             pMinterms->vars = m;
         }
+
+        if(0 == varsFound)
+        {
+            fprintf(stderr, "\n FATAL : Line containing vars = <num> is not found. \n");
+            exit(-3);
+        }
+
         if(strstr(newLine, "minterms"))
         {
             mintermsFound = 1;
