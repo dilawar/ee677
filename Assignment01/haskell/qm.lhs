@@ -9,7 +9,7 @@ data Bits = T | F | X deriving (Eq, Show)
 
 \begin{code}
 minterms :: [Int]
-minterms = [0,4,5,7,8,13]
+minterms = [0,1,2,8,9,10,13,14,15]
 \end{code}
 
 
@@ -118,6 +118,10 @@ combineHammingOne :: [Bits] -> [[Bits]] -> [[Bits]]
 combineHammingOne x xs = map (\y -> combine x y) (findHammingOne x xs)
 
 stepQM [] = []
+stepQM (x:[]) = []
 stepQM (x:xs) = (combineHammingOne x xs) ++ (stepQM xs)
 
+qm :: [[Bits]] -> [[Bits]]
+qm [] = []
+qm (x:xs) = stepQM (x:xs) ++ qm (stepQM (x:xs))
 \end{code}
