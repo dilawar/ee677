@@ -82,4 +82,23 @@ hammingDistance (a:as) (b:bs)
 
 2. Quine McClusky Method
 
+    The basis operation in QM method is to combine two terms with Hamming
+    distance 1. For example if 0110 and 0111 are combined then new term should
+    be 011-. Should be check if input to this function is valid. I think we
+    should, who knows who can give this function what! But wait, this function
+    is recursive and some tests are not invariant during recursion. So, unless
+    we prove that particular property is invariant during recursion, we must not
+    write them inside recursive function. Let's drop this idea for time being.
 
+\begin{code}
+combine :: [Bits] -> [Bits] -> [Bits]
+combine [] _ = []
+combine _ [] = []
+combine (a:as) (b:bs) 
+    | a == b = a : combine as  bs
+    | a /= b = X : combine as bs
+    | otherwise = error "Ooo.. Sticky situation."
+    
+listMinterms = minTermsToBitLists minterms 5
+testCombine = combine [F, F, T] [F, T, T]
+\end{code}
