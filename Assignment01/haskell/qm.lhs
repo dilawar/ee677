@@ -84,11 +84,14 @@ hammingDistance (a:as) (b:bs)
 
     The basis operation in QM method is to combine two terms with Hamming
     distance 1. For example if 0110 and 0111 are combined then new term should
-    be 011-. Should be check if input to this function is valid. I think we
-    should, who knows who can give this function what! But wait, this function
-    is recursive and some tests are not invariant during recursion. So, unless
-    we prove that particular property is invariant during recursion, we must not
-    write them inside recursive function. Let's drop this idea for time being.
+    be 011-. 
+    
+    Should we check if input to this function is valid. I think we should, who
+    knows who can give this function what! But wait, this function is recursive
+    and some properties are not invariant during recursion. So, unless we prove
+    that particular property is invariant during recursion, we must not write
+    them inside recursive function for testing purpose. Let's drop this idea be
+    dumb for time being.
 
 \begin{code}
 combine :: [Bits] -> [Bits] -> [Bits]
@@ -99,6 +102,22 @@ combine (a:as) (b:bs)
     | a /= b = X : combine as bs
     | otherwise = error "Ooo.. Sticky situation."
     
-listMinterms = minTermsToBitLists minterms 5
+listMinterms = minTermsToBitLists minterms 4
 testCombine = combine [F, F, T] [F, T, T]
+\end{code}
+
+    What happens if a minterm in list does not have any companion in that list
+    with hamming distance 1. We must include them in our final result.
+
+\begin{code}
+
+findHammingOne :: [Bits] -> [[Bits]] -> [[Bits]]
+findHammingOne a bs = filter (\y -> 1 == hammingDistance a y) bs
+
+combineHammingOne :: [Bits] -> [[Bits]] -> [[Bits]]
+combineHammingOne x xs = map (\y -> combine x y) (findHammingOne x xs)
+
+stepQM [] = []
+stepQM (x:xs) = (combineHammingOne x xs) ++ (stepQM xs)
+
 \end{code}
