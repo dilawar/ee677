@@ -24,6 +24,7 @@ class QuineMcClusky:
             print "Cannot open the file! Give another minterms file name!"
             self.filename=raw_input("Filename :")
         self.getminterms()
+        self.fin.close()
 
     def getminterms(self):
         line=self.fin.readline() #read first line
