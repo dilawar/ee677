@@ -98,20 +98,24 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
             {
                 int i = 0, count = 0;
                 int digits[10] = {0};
-                while(sep[i+1] != '\0')
+                if((int) sep[1] != 0)
                 {
-                    int num = (int)sep[i+1] - 48;
-                    digits[i] = num;
-                    count++;
-                    i++;
+                    while(sep[i+1] != '\0')
+                    {
+                        int num = (int)sep[i+1] - 48;
+                        digits[i] = num;
+                        count++;
+                        i++;
+                    }
+
+                    unsigned m = 0;
+                    for(i = 0; i < count; i++)
+                        m += (digits[count-i-1] * pow(10, i));
+
+                    intToMinterm(&thisTerm, m, (unsigned)pMinterms->vars);
+                    pMinterms->terms[pMinterms->nSOP] = thisTerm;
+                    pMinterms->nSOP++;
                 }
-                unsigned m = 0;
-                for(i = 0; i < count; i++)
-                    m += (digits[count-i-1] * pow(10, i));
-                
-                intToMinterm(&thisTerm, m, (unsigned)pMinterms->vars);
-                pMinterms->terms[pMinterms->nSOP] = thisTerm;
-                pMinterms->nSOP++;
                 *sep = '\0';
             }
         }

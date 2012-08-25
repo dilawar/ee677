@@ -3,7 +3,7 @@
  *
  *       Filename:  globals.h
  *
- *    Description:  header file for definitions.
+ *    Description:  Header file for definitions.
  *
  *        Version:  1.0
  *        Created:  08/18/2012 04:07:26 AM
@@ -87,7 +87,6 @@ void intToMinterm(term_t* pTerm, unsigned num, unsigned n);
  * =====================================================================================
  */
 void quineMcClusky(sop_t* minterms, sop_t* minimal);
-
 
 
 /* 
