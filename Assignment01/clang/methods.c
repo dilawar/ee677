@@ -94,29 +94,32 @@ void processInputFileToStoreMinterms(const char* fileName, sop_t* pMinterms)
             term_t thisTerm = {.size = 0, .term = {0} };
             char* find = index(newLine, '=');
             char* sep;
-            while(sep = rindex(find+1, ','))
+            find += 1;
+            int len = strlen(find);
+            int i = 0;
+            while(i < len)
             {
-                int i = 0, count = 0;
-                int digits[10] = {0};
-                if((int) sep[1] != 0)
+                int to = i+0;
+                /* find the next , */
+                int k;
+                for(k = i+1; k < len; k++)
                 {
-                    while(sep[i+1] != '\0')
+                    if(find[k] == ',')
                     {
-                        int num = (int)sep[i+1] - 48;
-                        digits[i] = num;
-                        count++;
-                        i++;
+                        to = k;
+                        int kk; int sum = 0;
+                        for(kk = i; kk < to; kk++)
+                            sum += (find[kk]-48)*pow(10, to-kk-1);
+                        intToMinterm(&thisTerm, sum, (unsigned)pMinterms->vars);
+                        pMinterms->terms[pMinterms->nSOP] = thisTerm;
+                        pMinterms->nSOP++;
+                        i = k;
+                        break;
                     }
-
-                    unsigned m = 0;
-                    for(i = 0; i < count; i++)
-                        m += (digits[count-i-1] * pow(10, i));
-
-                    intToMinterm(&thisTerm, m, (unsigned)pMinterms->vars);
-                    pMinterms->terms[pMinterms->nSOP] = thisTerm;
-                    pMinterms->nSOP++;
                 }
-                *sep = '\0';
+                i++;
+                if(find[i] == '\0')
+                    i = len + 1;
             }
         }
     }
