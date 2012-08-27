@@ -1,6 +1,28 @@
 -1 : Import needed libraries or write your own class.
 
+    We define our data-type as T for (true), F (false) and X (don't care). We
+    also 'derive' Equality on these data-types. Here is a sticky situtation.
+    What we can say about following relation :
+            is X == X ?
+    This is a tricky situtation. We don't know what value X can take. There are four
+    possibilities i.e. 0 == 1, 0 == 0, 1 == 0, 1 == 1. One can show that at
+    least one of these does not have same answer. Thus answer to X == X can only
+    be X. 
+
+    Now we run into another trouble. By default, haskell have only True and
+    False as valid values of predicate and allowing above mentioned comparisions
+    will force us to write our own function. Can one take an easy way out of it?
+
+    I believe we can. In our algorithm, we'll never compare equal terms. For
+    example, we can not say anything about whether 011- >= 011- but we can say
+    something about whether 011- >= 001-. Term 011- is always bigger than term
+    001- despite the value  - might take.
+
+    We must make sure that during the execution of our program, duplicate terms
+    do not exists in any list. 
+
 \begin{code}
+import Data.List -- For intersect 
 -- 1 : T, 0 : F, X : Don't care
 data Bits = T | F | X deriving (Eq, Show) 
 \end{code}
@@ -9,7 +31,7 @@ data Bits = T | F | X deriving (Eq, Show)
 
 \begin{code}
 minterms :: [Int]
-minterms = [0,1,2,8,9,10,13,14,15]
+minterms = [0,1,2,5,7,8,9,10,13,15]
 \end{code}
 
 
@@ -72,13 +94,23 @@ hammingDistance _ [] = 0 -- protection
 hammingDistance (a:as) (b:bs)
     | length(a:as) /= length(b:bs) =  error "This is Hamming! You are giving me unequal lists :-/ "
     | otherwise = helper (a:as) (b:bs) 0 where 
-                    helper [] _ count = count
-                    helper _ [] count = count
+                    helper [] _ n = n
                     helper (x:xs) (y:ys) count 
                         | x /= y = helper xs ys (count+1)
                         | otherwise = helper xs ys count 
 \end{code}
 
+    No less important is a step where we add an element to a list which already
+    contains that element. We must not add a element if present.
+
+\begin{code}
+cons :: [Bits] -> [[Bits]] -> [[Bits]]
+cons [] y = y
+cons x y
+    | null (filter (==x) y) = x:y
+    | otherwise = y
+
+\end{code}
 
 2. Quine McClusky Method
 
@@ -114,14 +146,39 @@ testCombine = combine [F, F, T] [F, T, T]
 findHammingOne :: [Bits] -> [[Bits]] -> [[Bits]]
 findHammingOne a bs = filter (\y -> 1 == hammingDistance a y) bs
 
-combineHammingOne :: [Bits] -> [[Bits]] -> [[Bits]]
-combineHammingOne x xs = map (\y -> combine x y) (findHammingOne x xs)
+-- Find all terms in a list with hamming distance n, and those terms which are
+-- not. Return a pair of lists.
+findTermsWithHammingDistanceN :: [Bits] -> Int -> [[Bits]] -> ([[Bits]], [[Bits]])
+findTermsWithHammingDistanceN [] _ _ = error "Empty list in first argument."
+findTermsWithHammingDistanceN x _ [] = ([], [])
+findTermsWithHammingDistanceN x 0 xs = (xs, [])
+findTermsWithHammingDistanceN x n (y:ys)
+    | n == hammingDistance x y = (cons y (fst (findTermsWithHammingDistanceN x n
+                                    ys)), snd ( findTermsWithHammingDistanceN x n ys))
+    | otherwise = ( fst (findTermsWithHammingDistanceN x n ys), cons y (snd
+                    (findTermsWithHammingDistanceN x n ys)))
 
-stepQM [] = []
-stepQM (x:[]) = []
-stepQM (x:xs) = (combineHammingOne x xs) ++ (stepQM xs)
+findTermsWithHammingDistanceOne x y = findTermsWithHammingDistanceN x 1 y
 
+-- TODO : Write a test for following property. 
+-- Property length (fst result) + length (snd result) == length input 
+
+
+combineHammingOne :: [Bits] -> [[Bits]] -> ([[Bits]], [[Bits]])
+combineHammingOne x xs 
+    = (map (\y -> combine x y) (fst (findTermsWithHammingDistanceOne x xs)), snd (findTermsWithHammingDistanceOne x xs))
+
+stepQM :: [[Bits]] -> ([[Bits]], [[Bits]])
+stepQM [] = ([], [])
+stepQM (x:[]) = ([], [])
+stepQM (x:xs) 
+    = (fst (combineHammingOne x xs) `union` fst (stepQM xs), intersect (snd
+        (combineHammingOne x xs)) (snd (stepQM xs)))
+
+{-
 qm :: [[Bits]] -> [[Bits]]
 qm [] = []
 qm (x:xs) = stepQM (x:xs) ++ qm (stepQM (x:xs))
+
+-}
 \end{code}
