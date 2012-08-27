@@ -31,7 +31,7 @@ data Bits = T | F | X deriving (Eq, Show)
 
 \begin{code}
 minterms :: [Int]
-minterms = [0,1,2,5,7,8,9,10,13,15]
+minterms = [0,1,2,8,9,10,13,14,15] -- Example from Somenzi and Satchel (or Hatchel)
 \end{code}
 
 
@@ -112,6 +112,15 @@ cons x y
 
 \end{code}
 
+    And how about substracting two lists. We might need it.
+
+\begin{code}
+--substactL :: [[Bits]] -> [[Bits]] -> [[Bits]]
+substractL x [] = x
+substractL x (y:ys) = substractL (filter (/=y) x) ys
+\end{code}
+
+
 2. Quine McClusky Method
 
     The basis operation in QM method is to combine two terms with Hamming
@@ -169,11 +178,10 @@ combineHammingOne x xs
     = (map (\y -> combine x y) (fst (findTermsWithHammingDistanceOne x xs)), snd (findTermsWithHammingDistanceOne x xs))
 
 stepQM :: [[Bits]] -> ([[Bits]], [[Bits]])
-stepQM [] = ([], [])
 stepQM (x:[]) = ([], [])
 stepQM (x:xs) 
-    = (fst (combineHammingOne x xs) `union` fst (stepQM xs), intersect (snd
-        (combineHammingOne x xs)) (snd (stepQM xs)))
+    = (fst (combineHammingOne x xs) `union` fst (stepQM xs), snd
+        (combineHammingOne x xs) `substractL` snd (stepQM xs))
 
 {-
 qm :: [[Bits]] -> [[Bits]]
