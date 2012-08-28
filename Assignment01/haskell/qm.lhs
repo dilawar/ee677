@@ -22,8 +22,6 @@
     do not exists in any list. 
 
 \begin{code}
-import Data.List -- For intersect 
-import Debug.Trace
 
 -- 1 : T, 0 : F, X : Don't care
 data Bits = T | F | X deriving (Eq, Show) 
@@ -32,8 +30,10 @@ data Bits = T | F | X deriving (Eq, Show)
 0. Data to used throughout the program.
 
 \begin{code}
+
 minterms :: [Int]
 minterms = [0,1,2,8,9,10,13,14,15] -- Example from Somenzi and Satchel (or Hatchel)
+
 \end{code}
 
 
