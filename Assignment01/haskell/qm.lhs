@@ -23,6 +23,8 @@
 
 \begin{code}
 import Data.List -- For intersect 
+import Debug.Trace
+
 -- 1 : T, 0 : F, X : Don't care
 data Bits = T | F | X deriving (Eq, Show) 
 \end{code}
@@ -115,10 +117,12 @@ cons x y
     And how about substracting two lists. We might need it.
 
 \begin{code}
---substactL :: [[Bits]] -> [[Bits]] -> [[Bits]]
-substractL x [] = x
-substractL [] _ = []
-substractL x (y:ys) = substractL (filter (/=y) x) ys
+substractL :: [[[Bits]]] -> [[Bits]]
+substractL (x:xs) 
+    = subs x (foldr (++) [] xs) where
+      subs x [] = x
+      subs [] y = []
+      subs x (y:ys) = subs (filter (/=y) x) ys
 \end{code}
 
 
@@ -187,14 +191,14 @@ combineHammingOne x xs
     = (map (\y -> combine x y) (fst (findTermsWithHammingDistanceOne x xs))
         , snd (findTermsWithHammingDistanceOne x xs))
 
-stepQM :: [[Bits]] -> ([[Bits]], [[Bits]])
-stepQM [] = ([], [])
+stepQM :: [[Bits]] -> ([[Bits]], [[[Bits]]])
+stepQM [] = ([], [[]])
 stepQM (x:xs) 
     = (fst (combineHammingOne x xs) `union` fst (stepQM xs)
-        , snd (combineHammingOne x xs) `substractL` snd (stepQM xs))
+        , (snd (combineHammingOne x xs) : (snd (stepQM xs))))
 
 qm :: [[Bits]] -> [[Bits]]
 qm [] = []
-qm x = snd (stepQM x) ++ qm (fst (stepQM x))
-
+qm x = substractL (snd (stepQM x)) ++ qm (fst (stepQM x))
+--
 \end{code}
