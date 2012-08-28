@@ -117,6 +117,7 @@ cons x y
 \begin{code}
 --substactL :: [[Bits]] -> [[Bits]] -> [[Bits]]
 substractL x [] = x
+substractL [] _ = []
 substractL x (y:ys) = substractL (filter (/=y) x) ys
 \end{code}
 
@@ -167,26 +168,33 @@ findTermsWithHammingDistanceN x n (y:ys)
     | otherwise = ( fst (findTermsWithHammingDistanceN x n ys), cons y (snd
                     (findTermsWithHammingDistanceN x n ys)))
 
-findTermsWithHammingDistanceOne x y = findTermsWithHammingDistanceN x 1 y
 
 -- TODO : Write a test for following property. 
 -- Property length (fst result) + length (snd result) == length input 
 
 
+-- This function is slightly different from the previous one. If there is no
+-- match for x in xs, then x also belong to snd of result.
+findTermsWithHammingDistanceOne x y 
+    | null (fst result) = (fst result, (x:(snd result)))
+    | otherwise = result 
+    where 
+        result = findTermsWithHammingDistanceN x 1 y
+
+
 combineHammingOne :: [Bits] -> [[Bits]] -> ([[Bits]], [[Bits]])
 combineHammingOne x xs 
-    = (map (\y -> combine x y) (fst (findTermsWithHammingDistanceOne x xs)), snd (findTermsWithHammingDistanceOne x xs))
+    = (map (\y -> combine x y) (fst (findTermsWithHammingDistanceOne x xs))
+        , snd (findTermsWithHammingDistanceOne x xs))
 
 stepQM :: [[Bits]] -> ([[Bits]], [[Bits]])
-stepQM (x:[]) = ([], [])
+stepQM [] = ([], [])
 stepQM (x:xs) 
-    = (fst (combineHammingOne x xs) `union` fst (stepQM xs), snd
-        (combineHammingOne x xs) `substractL` snd (stepQM xs))
+    = (fst (combineHammingOne x xs) `union` fst (stepQM xs)
+        , snd (combineHammingOne x xs) `substractL` snd (stepQM xs))
 
-{-
 qm :: [[Bits]] -> [[Bits]]
 qm [] = []
-qm (x:xs) = stepQM (x:xs) ++ qm (stepQM (x:xs))
+qm x = snd (stepQM x) ++ qm (fst (stepQM x))
 
--}
 \end{code}
