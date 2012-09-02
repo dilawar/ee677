@@ -80,6 +80,18 @@ class QuineMcClusky:
         for e in self.reducedterms:
             print e
 
+    def print_reduced_terms_tofile(self):
+        fout=open("result.txt","w")
+        for e in self.reducedterms:
+            strminterm=""
+            for x in e:
+                if not x==-1:
+                    strminterm=strminterm+str(x)
+                else:
+                    strminterm=strminterm+"-"
+            strminterm=strminterm+"\n"
+            fout.write(strminterm)
+        fout.close()
 
 if __name__=="__main__":
     #call a instance of the class QuineMcClusky with the filename of minterms.txt
@@ -87,4 +99,5 @@ if __name__=="__main__":
     #call the do_quinemcclusky method which will compute the reducedterms
     qm.do_quinemcclusky()
     #print the reduceedterms
-    qm.print_reduced_terms()
+    #qm.print_reduced_terms()
+    qm.print_reduced_terms_tofile()
