@@ -1,7 +1,6 @@
 -- Test script.
 --
-
-import Data.Set as Set 
+import qualified  Data.Set as Set 
 
 data Bit = T | F | X deriving (Eq, Show)
 type BitVector = [Bit]
@@ -35,5 +34,6 @@ hammingDistance (a:as) (b:bs)
                         | x /= y = helper xs ys (count+1)
                         | otherwise = helper xs ys count
 
-
-
+-- To develop this algorithm, we need to create a list of minterms.
+intMinterms = [0,1,2,8,9,10,14,13,15]
+minterms = map (\y -> intToBitVectorOfLength y 4) intMinterms
