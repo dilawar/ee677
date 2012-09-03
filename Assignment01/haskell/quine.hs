@@ -91,3 +91,5 @@ stepQM x = (nub $ mergedTerms p , minus x (nub $ markedTerms p))
 
 qm [] = []
 qm x = (snd $ stepQM x) ++ qm (fst $ stepQM x)
+
+quine x n = qm (listToUniqueMinterms x n)
