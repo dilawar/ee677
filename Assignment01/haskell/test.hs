@@ -63,16 +63,6 @@ merge (a:as) (b:bs)
     | a /= b = X : merge as bs
     | otherwise = error "Ooo.. Sticky situation."
  
--- Partitions the given minterms in such a way that each minterms has its
--- one-Hamming distance terms with it.
-getHammingOneMergedTerms :: BitVector -> [BitVector] -> (BitVector, [BitVector])
-getHammingOneMergedTerms x y = (x , mergedTerms x y)
-    where 
-        mergedTerms x [] = []
-        mergedTerms x (y:ys) 
-            | 1 == hammingDistance x y = merge x y : mergedTerms x ys
-            | otherwise = mergedTerms x ys
-
 -- Find marked and unmarked terms 
 markedUnmarkedTerms :: BitVector -> [BitVector] -> (BitVector, ([BitVector], [BitVector]))
 markedUnmarkedTerms x y = (x, (markedTerms x y, unmarkedTerms x y))
@@ -84,23 +74,9 @@ markedUnmarkedTerms x y = (x, (markedTerms x y, unmarkedTerms x y))
         unmarkedTerms x y = filter (\z -> 1 /= hammingDistance x z) y
     
 
-partitionMinterms :: [BitVector] -> [(BitVector, [BitVector])]
-partitionMinterms (x:[]) = []
-partitionMinterms x = getHammingOneMergedTerms (head x) x : (partitionMinterms (tail x))
-
-qmStep :: [BitVector] -> ([BitVector], [BitVector])
-qmStep x = (collectMarked y, collectUnMarked y) where 
-            y = partitionMinterms x
-
-collectMarked p = nub $ foldr (++) [] (snd $ unzip p)
-collectUnMarked p = nub $ foldr (\y -> (:) (fst y)) [] b where 
-                            b = filter (\y-> null (snd y)) p
-
 collectMarkedUnmarkedTerms [] = []
 collectMarkedUnmarkedTerms x = markedUnmarkedTerms (head x) x : collectMarkedUnmarkedTerms (tail x)
 
-
----------------------
 
 stepQM x = (nub $ mergedTerms p , minus x (nub $ markedTerms p)) 
     where 
@@ -113,4 +89,5 @@ stepQM x = (nub $ mergedTerms p , minus x (nub $ markedTerms p))
             -- | null ps = (fst p) : markedTerms ps
             | otherwise = (fst . snd $ p) ++ markedTerms ps
 
-
+qm [] = []
+qm x = (snd $ stepQM x) ++ qm (fst $ stepQM x)
