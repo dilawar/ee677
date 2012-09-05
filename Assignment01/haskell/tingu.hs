@@ -51,10 +51,11 @@ computeMinimalForm x = do
                 Right r -> do 
                             let terms = map (\y -> read y :: Integer) r
                             let m = quine terms var
-                            putStrLn "I have found the minimal representation."
-                            print m
-                            print "Now I am verifying my results.. It may take some time.... "
+                            putStrLn "** I have found the minimal representation of your function."
+                            putStrLn $ "   |- "++show  m
+                            putStrLn "** Verifying my answers. It may take some time.... "
                             verifyResult m terms var
+                            putStrLn "Peace!!"
                           
 -- This function verify if result is correct 
 verifyResult m terms var 
@@ -82,7 +83,13 @@ getMinterms (x:y) = do
                     return r
                     putStrLn ""
 
+welcome = "\n"++
+          "\nHello, I am Tingu, the mighty crab! And I like tea. " ++
+          "\nYou should call me "++
+          " $./tingu -i filename "++
+          " from your terminal.\n"
 main = do 
+    putStrLn welcome 
     args <- getArgs
     case getOpt RequireOrder options args of 
         (flags, [], [] ) -> processArgs flags
