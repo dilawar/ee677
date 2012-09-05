@@ -1,3 +1,6 @@
+\begin{code}
+module Quine (quine) where 
+\end{code}
 0 : Import needed libraries or write your own class.
 
     We define our data-type as T for (true), F (false) and X (don't care). We

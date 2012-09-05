@@ -3,6 +3,7 @@ import System.Environment (getArgs)
 import System.Console.GetOpt
 import Text.ParserCombinators.Parsec
 import Data.Maybe  (fromMaybe)
+import Test.QuickCheck
 
 test = quine [1,2,3] 2
 
