@@ -11,7 +11,6 @@ options :: [OptDescr Flag]
 options = [
     Option ['V'] ["version"] (NoArg Version) "show version number"
     , Option ['i'] ["input"] (ReqArg Input "FILE") "Some option that require a file arguments"
-    , Option ['o'] ["output"] (OptArg makeOutput "FILE") "some option with an optional file argument"
     ]
 
 makeOutput :: Maybe String -> Flag 
@@ -54,13 +53,13 @@ computeMinimalForm x = do
                             let m = quine terms var
                             putStrLn "I have found the minimal representation."
                             print m
-                            print "\n Now I am verifying my results.. I may take some time.... \n"
+                            print "Now I am verifying my results.. It may take some time.... "
                             verifyResult m terms var
                           
 -- This function verify if result is correct 
 verifyResult m terms var 
-    = verboseCheck $ ( prop_equality :: [Bit] -> Bool ) where 
-            prop_equality x = applyInputToSOP m x == applyInputToSOP (listToUniqueMinterms terms var) x
+    = quickCheck $ ( prop_equality :: [Bit] -> Bool ) where 
+            prop_equality x = applyInputToSOP m (take var x) == applyInputToSOP (listToUniqueMinterms terms var) (take var x)
 
 applyInputToATerm [] _ = True
 applyInputToATerm _ [] = True
