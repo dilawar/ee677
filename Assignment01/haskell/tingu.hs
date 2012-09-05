@@ -5,8 +5,6 @@ import Text.ParserCombinators.Parsec
 import Data.Maybe  (fromMaybe)
 import Test.QuickCheck
 
-test = quine [1,2,3] 2
-
 data Flag = Version | Input String | Output String deriving Show
 
 options :: [OptDescr Flag]
@@ -25,7 +23,6 @@ processArgs :: [Flag] -> IO ()
 processArgs x = do 
     case length x of 
         1 -> computeMinimalForm x 
-       -- 2 -> compareTwoFiles x 
 
 
 -- Write the parser here.
@@ -57,8 +54,25 @@ computeMinimalForm x = do
                             let m = quine terms var
                             putStrLn "I have found the minimal representation."
                             print m
+                            print "\n Now I am verifying my results.. I may take some time.... \n"
+                            verifyResult m terms var
                           
-    
+-- This function verify if result is correct 
+verifyResult m terms var 
+    = verboseCheck $ ( prop_equality :: [Bit] -> Bool ) where 
+            prop_equality x = applyInputToSOP m x == applyInputToSOP (listToUniqueMinterms terms var) x
+
+applyInputToATerm [] _ = True
+applyInputToATerm _ [] = True
+applyInputToATerm (x:xs) (y:ys) 
+    | x == X = applyInputToATerm xs ys
+    | x == y = applyInputToATerm xs ys 
+    | otherwise = False
+
+-- This function apply input to a SOP and return True if input
+-- satisfies it.
+applyInputToSOP x input = or $ map (\y -> applyInputToATerm y input) x
+
 
 getMinterms (x:y) = do 
     print (x)

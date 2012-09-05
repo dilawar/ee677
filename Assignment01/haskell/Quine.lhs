@@ -1,5 +1,5 @@
 \begin{code}
-module Quine (quine) where 
+module Quine (quine, Bit(X,T,F), listToUniqueMinterms) where 
 \end{code}
 0 : Import needed libraries or write your own class.
 
@@ -27,12 +27,16 @@ module Quine (quine) where
 \begin{code}
 import Data.List
 import Data.Bits
+import Test.QuickCheck
 import qualified Data.Set as Set
 
 -- 1 : T, 0 : F, X : Don't care
 data Bit = F | T | X deriving (Eq, Ord, Show)
 type BitVector = [Bit] 
 
+-- For quickcheck
+instance Arbitrary Bit where 
+    arbitrary = elements [T,F] 
 \end{code}
 
 1. Helper functions 
