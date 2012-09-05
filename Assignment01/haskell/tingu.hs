@@ -21,7 +21,9 @@ header = "Usage : ./tingu [OPTIONS ...]"
 processArgs :: [Flag] -> IO ()
 processArgs x = do 
     case length x of 
+        0 -> putStrLn "version 0.9"
         1 -> computeMinimalForm x 
+        2 -> putStrLn "Call me ./tungu -i filename "
 
 
 -- Write the parser here.
