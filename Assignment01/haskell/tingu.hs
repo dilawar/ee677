@@ -35,6 +35,13 @@ termsline = ((string "minterms") >> spaces >> char '=' >> spaces) >> many1 (char
 eol = (string "\n" <|> string "\n\r")
 terms = endBy (many1 digit) (char ',')
 
+
+printMinterm [] = ""
+printMinterm (x:xs) = (map (\y -> case y of 
+                                    T -> '1'
+                                    F -> '0'
+                                    X -> '-') x) ++"\n"++printMinterm xs
+
 computeMinimalForm :: [Flag] -> IO ()
 computeMinimalForm x = do 
     file <- readFile ((\(Input y) -> y) (head x))
@@ -52,7 +59,7 @@ computeMinimalForm x = do
                             let terms = map (\y -> read y :: Integer) r
                             let m = quine terms var
                             putStrLn "** I have found the minimal representation of your function."
-                            putStrLn $ "   |- "++show  m
+                            putStrLn $ printMinterm  m
                             putStrLn "** Verifying my answers. It may take some time.... "
                             verifyResult m terms var
                             putStrLn "Peace!!"
