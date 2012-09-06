@@ -60,7 +60,7 @@ computeMinimalForm x = do
                 Right r -> do 
                             let terms = map (\y -> read y :: Integer) r
                             let m = quine terms var
-                            putStrLn "** I have found the minimal representation of your function."
+                            putStrLn "** I have found the essential prime implicants.."
                             putStrLn $ printMinterm  m
                             putStrLn "** Verifying my answers. It may take some time.... "
                             verifyResult m terms var
