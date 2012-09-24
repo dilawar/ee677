@@ -1,0 +1,180 @@
+\section{VLSI Design Automation}
+\label{sec:vlsi_design_automation}
+
+  These problems can be classified into following subsections. We also hint at
+  possible approach to their solutions.
+
+\subsection{Circuit partitioning}
+
+  Given a circuit, we model it as a graph. Each node represents a circuit
+  element and edge represent the interconnects. For example consider the
+  following figure.
+
+\begin{figure}[h]
+\centering
+\subfloat[A circuit]{
+  \begin{tikzpicture}[circuit logic US, scale=0.8]
+    \node (i0) at (0,0) {}; 
+    \node (i1) [below = of i0]{};
+    \node (i2) [below = of i1]{};
+    \node [nand gate, right=of i0] (n1) {5};
+    \node [xor gate, right=3cm of i1] (x1) {4};
+    \node [nand gate, right=of i2] (n2) {6};
+    \node [and gate, right=of x1] (a1) {2};
+    \node [not gate, right=of a1] (in1) {1};
+    \node [not gate, rotate=90, below left=of a1] (in2) {3};
+
+    %\draw (i0.east) -- ++(right:3mm) |- (n1.input 1);
+    \draw (n1.input 1) -- ++(left:10mm);
+    \draw (i1.east) -- ++(right:5mm) |- (n1.input 2);
+    \draw (i1.east) -- ++(right:5mm) |- (n2.input 1);
+    %\draw (i2.east) -- ++(right:3mm) |- (n2.input 2);
+    \draw (n2.input 2) -- ++(left:10mm);
+
+    \draw (n1.output) -- ++(right:5mm) |- (x1.input 1);
+    \draw (n2.output) -- ++(right:5mm) |- (x1.input 2);
+    \draw (x1.output) -- ++(right:3mm) |- (a1.input 1);
+    \draw (in2.output) -- ++(right:3mm) |- (a1.input 2);
+
+    \draw (a1.output) -- ++(right:3mm) |- (in1.input);
+    \draw (in1.output) -- ++(right:3mm);
+    \draw (in2.input) -- ++(down:3mm);
+  \end{tikzpicture}
+ }
+ \subfloat[Modeled as graph] {
+  \begin{tikzpicture}
+    [every node/.style={draw, circle}]
+    \node (n5) {5};
+    \node (n6) [below =of n5] {6};
+    \node (n4) [right =of n5, yshift=-7mm] {4};
+    \node (n2) [right =of n4] {2};
+    \node (n3) [below =of n2, yshift=4mm] {3};
+    \node (n1) [right =of n2] {1};
+
+    \draw[-] (n5) -- (n6);
+    \draw (n5) -- (n4);
+    \draw (n4) -- (n6);
+    \draw (n4) -- (n2);
+    \draw (n2) -- (n3);
+    \draw (n2) -- (n1);
+
+  \end{tikzpicture}
+  }
+\end{figure}
+
+  Now one can state a generic partitioning problem.
+
+  \begin{problem}[40]
+
+    Given a graph $G(V,E)$ where each vertex $v \in V$ has a size $s(v)$, and
+    each edge $e \in E$ has a weight $w(e)$, the problem is to divide the set
+    $V$ into $k$ subsets $V_1,\ldots,V_k$ such that an objective function is
+    optimized, subject to certain constraints.
+
+  \end{problem}
+
+  One can formulate various constraints. Better known among them the listed
+  below.
+
+  \begin{description}
+  \item [Bounded size] Assume that a single chip does not allow more than 6
+  gates on average and your design has 100 of gates. Thus, you need to partition
+  your circuit into at least 17 subsets, each of them is not having more than 6
+  gates. Wouldn't be great if each partition have equal number of gates?
+
+  \item[Minimize external wiring] Another situation is that we have many
+  packages but there is a need to connect these packages through external wires.
+  It is hightly desirable to minimize the lenght of external wiring (why?). 
+
+  \end{description}
+
+  One of the most popular algorithm to partitioning problem is due to
+  \textbf{Keninghan and Lin} which finds a partition and improves it further.
+  A heuristic is due known as \textbf{Fiduccia Mattheyses}. Some of the most
+  powerful algorithm are based on a technique known as \textbf{simulated
+  annealing}.
+  
+\subsection{Placement and routing problem}
+
+  TODO : Give a small description and points to well known algorithms.
+
+  \begin{description}
+  \item [Grid routing]
+  \item [Channel routing]
+  \item [Layout generation]
+  \item [Floorplanning]
+  \end{description}
+
+\subsection{Verification, validation and testing}
+
+Following is from course notes provided by Prof. Madhav P. Desai, Verification
+of VLSI circuits, 2010.
+
+\begin{quotation}
+"
+Testing, verification and validation are critical processes in ensuring that the
+circuit that is being manufactured meets the requirements that motivated its
+design.
+
+\begin{itemize}
+
+\item By \textbf{testing}, we normally refer to the process used to determine
+that the manufactured circuit is functional. Every manufactured circuit needs to
+be tested, and the result of the test should, with a high degree of confidence,
+determine that the circuit is functional.
+
+\item By \textbf{verification}, we normally refer to the process used to confirm
+that refinements in the design process are consistent with the circuit
+specifica- tion. For example, when a logic circuit is implemented using
+transistors, we need to verify that the transistor network is equivalent to the
+logic circuit which it is supposed to implement. This is done at each refinement
+step in the design process.
+
+\item By \textbf{validation}, we normally refer to the process used to confirm
+that a functional manufactured circuit will fulfill the requirements to which it
+was designed. This usually involves the construction of a prototype and a test
+setup which mimics reality to the maximum extent possible.  
+
+\end{itemize}
+
+Typically, the effort needed to implement these processes in the design of
+complex circuits is substantial; a major fraction of the total product
+development effort is contributed by the test, verification and validation
+processes.  
+"
+\end{quotation}
+
+Following are the major problems in testing.
+
+\begin{itemize}
+
+\item Manufacturing defects and fault models.  
+\item The formulation of the test problem.  
+\item The use of fault simulation in identifying fault coverage.  
+\item Test pattern generation for combinational gate-level circuits using the
+stuck-at fault model.  
+\item Testing of sequential circuits.  
+\item The use of scan techniques to test sequential circuits.  
+\item Built-in self-test (BIST).  
+\item Error correction and schemes for constructing fault-tolerant circuits. 
+\end{itemize}
+
+Verification is often done using simulation but this is not enough these days.
+Use of formal verification is rising.
+\begin{description}
+
+\item[Formal Verification of combinational circuits] Given
+a circtuit, prove some properties holds on it. To do it, we may use Binary decision diagrams
+or Satisfiability solvers. 
+
+\item [Formal verification of sequential circuits]  Given a state machine, prove
+that some properties holds at a given time. Prove that given two designs or two
+state machines are equivalent. State exploration techniques, model
+checking techniques
+
+\end{description}
+
+\paragraph{Fault diagnosis}
+
+  Refer to lecture notes. To be updated.
+

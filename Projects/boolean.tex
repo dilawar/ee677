@@ -1,0 +1,260 @@
+\section{Boolean Logic}
+
+\begin{quotation}
+ \begin{flushright}
+ 'Contrariwise', continued Tweedledee, 'if it is so, 
+ it might be; and if it were 
+ so, it would be;  but as it isn't, it ain't. That's logic. \\
+ -- \textbf{Lewis Carroll}, Through the Looking Glass (1871) 
+ \end{flushright}
+\end{quotation}
+  
+  \paragraph{A note from history} Modern Boolean expressions are written
+  differently from what were originally devised by George Boole.  He thought
+  that 0 and 1 could be used to construct a   calculus of logical reasoning; in
+  his \textit{An Investigation of Laws of Thoughts} where he wrote,
+  \begin{quote} Let us conceive, then, of an Algebra in which the symbols x, y,
+    z, \&c admit indifferently of the values of 0 and 1, and of these values
+    alone.  \end{quote}.  
+  It is surprising that he never dealt with the "logical or" operation $+$; and
+  he restricted himself to ordinary arithmetic on 0 and 1. In his system, $1+1$
+  was 2 and not 0. He took pain to deal with the case when both of terms in
+  $x+y$ were 1; he wrote $x+(1-x)y$ to ensure that result of this disjunction
+  would never be equal to 2. He also called his $+$ operator both "or" and "and"
+  in his paper. These days this practice will be strange if not unacceptable.
+  But when we realize that his usage was in fact normal English, it looks
+  reasonable. As Knuth explains in [The art of computer programming, 4(A)], we
+  say, for example, that "boys \textbf{and} girls are children," but "children
+  are boys \textbf{or} girls".
+  
+ \subsection{Boolean Satisfiability problem}
+
+  A Boolean \footnote{In old times, Boolian} function is said to be
+  \textbf{satisfiable} if it is not identically zero - i.e. it has at least one
+  implicant. To find an \emph{efficient} way to decide whether a given Boolean
+  function is satisfiable or not is the most famous problem in computer science.
+  To be precise, we ask : \emph{Given a Boolean formula of length $N$ and test
+  it for satisfiability, always giving the correct answer after performing at
+  most $N^{O(1)}$ steps?} [Knuth, TAOP 4(A)].
+
+  Granted that testing for satifiability in general is tough. In fact, it is
+  difficult even in simplified form; a conjuctive normal form that has only
+  three \textit{literals} in each clause : 
+  \begin{equation}
+  \label{eq:3sat}
+  f(x_1,\ldots,x_n) = (t_1+u_1+v_1).(t_2+u_2+v_2)\ldots(t_m+u_m+v_m)
+  \end{equation}
+
+  Here each $t_j, u_j$, and $v_j$ is $x_k$ or $x'_k$ for some $k$. This form is
+  called \textbf{3CNF} and problem of deciding satisfiability of these formulas
+  is called \textbf{3SAT}. We'll restrict our short attention span to 3SAT
+  problems for any general SAT problem can be reduced to a 3SAT problem.
+
+  \paragraph{Example}
+
+  The shortest unsatisfiable Boolean formula in 3CNF known to humanity is
+  $(x+x+x).(x'+x'+x')$. This is lame for it is of no challenge to the intellect of
+  an initiated. 
+
+  \begin{remark}
+
+  Can you think of a program which generates Boolean functions in 3CNF forms
+  which are not satisfiable? 
+  
+  \end{remark}
+
+  When we assume that three literals in all clauses in equation \ref{eq:3sat} are
+  differnt then we run into troubled water. Each clause will rule out exactly
+  1/8 possibilities (why?). Thus any such formula with 7 clause is automatically
+  satifiabile!
+  
+  The shortest interesting formula in 3CNF has 8 clause and is due to R. L.
+  Rivest which is following unless I made some mistake in copying it down.
+
+  \begin{equation}
+  \label{eq:shortest_3sat}
+  \begin{gathered}
+  (x_2+x_3+x'_4).(x_1+x_3+x_4).(x'_1+x_2+x_4).(x'_1+x'_2+x_3). \\
+  (x'_2+x'_3+x_4) .(x'_1+x'_3+x'_4).(x_1+x'_2+x'_4).(x_1+x_2+x'_3)
+  \end{gathered}
+  \end{equation}
+
+  \paragraph{Algorithm and data-structures}
+
+  Boolean function will be given as expression-trees stored in \texttt{graphml}
+  format.  Binary decision diagrams (BDD) can also be emplyoed in solving this
+  problem \ref{sec:data_structure}. I am not aware of any algorithm which
+  generates satisfiable 3CNF functions efficiently. It is very hard to give a
+  list of function which are unsatisfiable. For example, look at this
+  \href{http://cstheory.stackexchange.com/questions/8117/minimum-unsatisfiable-3-cnf-formulae}{discussion}.
+
+  One of the most widely used algorithm to solve this problem is 
+  Davis Putnam Logemann Loveland algorithm [DPLL].
+
+    \begin{problem}[30] 
+      Implement DPLL algorithm.
+    \end{problem}
+
+    \begin{remark}
+
+    There are many SAT solvers. There is also an annual competetion where SAT
+    solvers compete for efficiency. You can find many example problems. See
+    \href{http://www.satcompetition.org/}{this webpage}.
+
+    The standard format to these sat solver is DIMACS format. You can also use
+    the same format.
+
+    \end{remark}
+
+    One might as well do the following in her spare time.
+
+    \begin{problem}[20]
+      Convert Boolean expression tree into DIMACS file.
+    \end{problem}
+
+  \begin{comment}
+    Make sense of Tweedledee comment quoted at the begining of this section. 
+    Lewis Carroll was a logician, so it is likely that this comment is logically
+    consistent. 
+    
+    One solution is due to C. Sartena. Tweedledee is describing the implication
+    $x \implies y$. What he actually wants to say is "Contrariwise, if y is so,
+    x might be, and if x were so, y would be; but as y isn't; x ain't. Thats
+    logic!".  
+    
+  \end{comment}
+
+
+\subsection{Graph algorithms}
+\label{sec:graph_algorithms}
+
+In addition to the algorithms discussed in the classroom, following algorithms
+can also be taken up for the project.
+
+\paragraph{Graphs and matrix} 
+
+Recall from network theory that a electrical network can be represented by a
+graph. Graph was usually accompanied by its incidence matrix.
+
+  \begin{problem}[15]
+    Given a graph, compute its adjacency matrix, Laplacian matrix, and distance
+    matrix. Also compute its eigenvalues.
+  \end{problem}
+
+\begin{remark}
+  R. B. Bapat book \textbf{Graphs and Matrices} is a great introductory book.
+  Students who are interested in graph theory may like to buy it for future
+  reference.
+\end{remark}
+
+\paragraph{Graphs and circuits}
+
+  Also recall that we constructed admittance matrix $A$ and then we solved
+  $Ax=b$ to solve the circuit. 
+
+  \begin{problem}[30]
+     
+     Given a ngspice netlist (R, V, I only) construct a graph which represents
+     this circuit where each edge represents a device (R, V, I). Generate
+     appropriate matrices to solve this circuit using modified nodal-analysis
+     (MNA).
+
+  \end{problem}
+
+  Ngspice becomes very slow with nodes over 20-30 thousands. It was designed to
+  use sparsed matrix techniques which does not scale over large circuits nicely.
+  Another method $NAL-NBK$ is discussed in Prof. H. Narayana book \textbf{Submodular
+  function and electrical network}.
+
+  \begin{problem}[35] 
+  
+  Given a netlist (R,V,I), generate a network graph and solve it using $NAL-NBK$
+  method. You can also explore the possibility of extending BITSIM with Prof.
+  Patkar.  
+  
+  \end{problem}
+    
+
+\paragraph{Partitioning graphs} 
+
+  Partitioning of graph is very important. Prof.  Patkar Ph.D. thesis was in
+  the area of partitioning. You can request him to deliver an overview of
+  partitioning techniques in a separate lecture.  Partitioning of graph can be
+  done for various purposes. As far as computation is concerned, one major
+  philosophy behind partitioning is \textbf{divide-and-conquer} such that each
+  partitioned problem becomes 'independent' enough to be solved on different
+  processor. For an example see chapter on 'multi-port decomposition" in Prof.
+  Narayanan book.
+
+  You are encouraged to partition a graph as you like (with some justification).
+  Two of the following partition criteria, however, are too important to miss. 
+
+  \begin{problem}[15]
+  Given a graph, partition it into its strongly connected components,
+  1-connected components, and 2-connected components.
+  \end{problem}
+
+  \begin{problem}[25]
+  Given a simple connected graph, partition all vertices of it into smallest
+  possible number of disjoint, independent sets. An independent set is a set
+  of vertices such that no two vertices in the set are adjacent.
+  \end{problem}
+
+  \textbf{Some more problems are listed in section
+  \ref{sec:vlsi_design_automation}}.
+
+\paragraph{Matching TAs with courses}
+
+  Here is one practical problem. Each year, EE department asks its Teaching
+  Assistants to give three preferences of courses which they would like to serve
+  as Teaching Assistant.
+
+  \begin{itemize}
+    \item There are $n$ TAs in the department and there are $m$ courses running.
+    \item Each TA has a credit rating between 0 and 5.
+    \item Each course has certain requirement of TA credits e.g. EE677 needs
+    TAs worth 20 credits.
+    \item Each TA belongs to any of the following 3 category : DD, MTECH, RS.
+    \item Each category of TAs has its average rating.
+  \end{itemize}
+
+  Construct a bipartite graph with TAs on left and on the right hand side we
+  have courses. Draw and edge between a TA and a course if and only if, he has
+  given that course as his preference. Assign a weight on the edge according to
+  the preference for example if 10407007 picks EE677 as his first choice, EE309
+  as second and EE721 as his third choice then there are three edges going from
+  10407007 to EE677, EE309, EE721 with edge weight-age of 10, 7, 3 (some other
+  numbering is also possible).
+
+\begin{problem}[45]
+  Allot each TA a course such that sum of edges in matching is maximised. Make
+  sure each course gets TA's such that distribution of credit set is 'fair'. For
+  example if EE677 which requires TAs worth 20 credit can be alloted 4 TA's
+  worth 5 credit each (highest possible) which is a bad distribution of 10 TA's
+  each worth 2 credit, this is equally bad. We want as many good TA's as bad one
+  in the course.
+
+  Explore the possibility of adding another constraint : there is at least one
+  TA from two different category?
+
+  Assign credit randomly to TA's to test your algorithm. 
+
+  What if a TA wants a course eagerly but instructor has given a negative
+  feedback about him in the past? Or he does not want him at all? Find a
+  strategy which causes least heart-burn.
+  \end{problem}
+
+\paragraph{Network flow}
+
+  Network flow algorithms does not look very glamorous at first reading but they
+  are one of the most effective tool in taming combinatorial problems. For
+  instance, bipartite graph matching, integer programming, as well as linear
+  programming problems can be solved using network flow methods.
+
+  \begin{problem}[35]  
+ 
+    Implement \textbf{push-relabel} method to compute max-flow in a network. Use
+    priority queues for iteration over vertices.
+  
+  \end{problem}
+
