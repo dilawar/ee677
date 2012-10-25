@@ -6,26 +6,22 @@
 file=Data.bsv
 
 BSC=bsc
-BSCFLAGS =
+BSCFLAGS=
 # We are using verilog simulator to compile our verilog code.
 VSIM=iverilog
 
 # If topmodule is not passed from  command line, then use the default one.
-ifdef $1
-TOPMODULE=$1
-else
-TOPMODULE=$(patsubst %.bsv, mk%, $(file))
-endif 
+top=$(patsubst %.bsv, mk%, $(file))
 
-VERILOGSRC = $(TOPMODULE).v
+VERILOGSRC = $(top).v
 
 EXE = $(patsubst %.bsv,%,$(file))
 # compile to Verilog
 all : $(EXE)
-	./$(EXE) +bscvcd+ $(TOPMODULE).vcd
+	./$(EXE) +bscvcd+ $(top).vcd
 
-$(EXE) : $(VERILOGSRC)
-	$(BSC) -verilog -e $(TOPMODULE) -vsim $(VSIM) -o $@ $+
+$(EXE) : $(VERILOGSRC) $(file)
+	$(BSC) -verilog -e $(top) -vsim $(VSIM) -o $@ $<
 
 $(VERILOGSRC) : $(file)
 	$(BSC) $(BSCFLAGS) -verilog -u $<
@@ -34,5 +30,5 @@ $(VERILOGSRC) : $(file)
 
 .PHONY: clean
 clean:
-	rm -f *.bi *.bo  *.vcd *~ $(TOPMODULE).v $(EXE)
+	rm -f *.bi *.bo  *.vcd *~ $(top).v $(EXE)
 
