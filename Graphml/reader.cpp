@@ -24,7 +24,7 @@
 using namespace std;
 using namespace boost;
 
-/*  Define what vertex of the graph should hold. Not all fields declared are
+/*  Declare what vertex of the graph should hold. Not all fields declared are
  *  used 
  */
 struct vertex_info {
@@ -34,9 +34,14 @@ struct vertex_info {
   int type;                                 
 };
 
+/*  Declare what edges of the graph should hold */
+struct edge_info {
+  double weight;
+};
+
 /* Define the type of graph */
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::bidirectionalS
-  , vertex_info> graph_t;
+  , vertex_info, edge_info> graph_t;
 
 /* Declare dynamic properties for graphml format. */
 boost::dynamic_properties dp;
@@ -54,6 +59,7 @@ void readGraphMLFile(graph_t& graphToBuild, string gmlFileToRead);
 void readGraphMLFile ( graph_t& designG, string fileName )
 {
   dp.property("name", get(&vertex_info::name, designG));
+  dp.property("weight", get(&edge_info::weight, designG));
 
   ifstream gmlStream;
   gmlStream.open(fileName.c_str(), ifstream::in);
